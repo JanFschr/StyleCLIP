@@ -10,6 +10,7 @@ from tqdm import tqdm
 from clip_loss import CLIPLoss
 from stylegan2.model import Generator
 import clip
+from utils import ensure_checkpoint_exists
 
 
 
@@ -22,6 +23,7 @@ def get_lr(t, initial_lr, rampdown=0.25, rampup=0.05):
 
 
 def main(args):
+    ensure_checkpoint_exists(args.ckpt)
     text_inputs = torch.cat([clip.tokenize(args.description)]).cuda()
     os.makedirs(args.results_dir, exist_ok=True)
 
@@ -114,6 +116,6 @@ if __name__ == "__main__":
 
     result_image = main(args)
 
-    torchvision.utils.save_image(result_image.detach().cpu(), os.path.join(args.results_dir, "final_result.png"), normalize=True, scale_each=True, range=(-1, 1))
+    torchvision.utils.save_image(result_image.detach().cpu(), os.path.join(args.results_dir, "final_result.jpg"), normalize=True, scale_each=True, range=(-1, 1))
 
 
